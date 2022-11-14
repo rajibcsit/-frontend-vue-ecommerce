@@ -24,7 +24,23 @@
         <td>{{ product.name }}</td>
         <td>{{ product.category.name }}</td>
         <td>{{ product.supplier.name }}</td>
-        <td><img :src="product.image" alt="" class="product_image" /></td>
+        <td>
+          <!-- <img
+            v-if="product.image"
+            :src="product.image"
+            alt="dd"
+            class="product_image"
+          /> -->
+          <img
+            v-if="product.image"
+            :src="product.image ? product.image : 'no image'"
+            class="product_image"
+            alt="uploaded-image"
+          />
+          <!-- <img v-else src="hello" alt="no image" /> -->
+          <img v-else src="@/assets/logo.png" alt="default-image" />
+        </td>
+
         <td>{{ product.price }}</td>
         <td>{{ product.description }}</td>
         <td>

@@ -57,20 +57,6 @@
 
         <tr>
           <td>
-            Image:
-          </td>
-          <td>
-            <input
-              v-model="product.image"
-              type="text"
-              class=" product_image"
-              placeholder="Photo URL"
-            />
-          </td>
-        </tr>
-
-        <tr>
-          <td>
             Price:
           </td>
           <td>
@@ -98,6 +84,28 @@
           </td>
         </tr>
         <tr>
+          <td>
+            <label for="file" class="col-md-4 col-form-label text-md-right"
+              >Image</label
+            >
+          </td>
+          <td>
+            <div class="form-group">
+              <input
+                type="file"
+                name="image"
+                @change="loadImage"
+                class="form-control"
+                placeholder=""
+              />
+            </div>
+            <br />
+            <img :src="photo" alt="" style="height:100px" />
+            <br />
+          </td>
+        </tr>
+
+        <tr>
           <td></td>
           <td>
             <button class="btnSave" type="submit">Update</button>
@@ -114,7 +122,7 @@ import axios from "axios";
 import iziToast from "izitoast";
 export default {
   name: "EditProduct",
-  data: function() {
+  data() {
     return {
       product: {
         name: "",
@@ -125,18 +133,39 @@ export default {
         image: ""
       },
       suppliers: [],
-      categories: "",
+      categories: [],
+      photo: "",
       errorMessage: null
     };
   },
 
   methods: {
+    loadImage(e) {
+      const file = e.target.files[0];
+      // Do some client side validation...
+      this.product.image = file;
+      // show image here
+      let reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = e => {
+        this.photo = e.target.result;
+      };
+    },
     //show single product data
     updateProduct() {
+      let formData = new FormData();
+
+      formData.append("name", this.product.name);
+      formData.append("description", this.product.description);
+      formData.append("supplier_id", this.product.supplier_id);
+      formData.append("category_id", this.product.category_id);
+      formData.append("price", this.product.price);
+      formData.append("image", this.product.image);
+
       axios
-        .put(
-          "http://127.0.0.1:8000/api/product/" + this.$route.params.id,
-          this.product
+        .post(
+          `http://127.0.0.1:8000/api/product/${this.$route.params.id}`,
+          formData
         )
         .then(response => {
           console.log(response.data);
@@ -167,12 +196,14 @@ export default {
         this.product.price = response.data.data.price;
         this.product.category_id = response.data.data.category_id;
         this.product.supplier_id = response.data.data.supplier_id;
-        // this.$router.push({ name: "admin.product" });
+        this.product.image = response.data.data.image;
       });
 
     // /get all suppllier/
     axios.get("http://127.0.0.1:8000/api/supplier").then(response => {
       this.suppliers = response.data.data;
+      console.log("response.data.data");
+      console.log(response.data.data);
     });
     // /get all suppllier/
     axios.get("http://127.0.0.1:8000/api/category").then(response => {
