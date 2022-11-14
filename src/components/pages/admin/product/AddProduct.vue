@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="submitAdd()">
+  <form @submit.prevent="addProducts()">
     <table>
       <tr>
         <td>
@@ -15,18 +15,15 @@
           />
         </td>
       </tr>
+
       <tr>
         <td>
           Category:
         </td>
         <td>
-          <select
-            required
-            v-model="newProduct.category"
-            v-if="categories.length > 0"
-          >
+          <select required v-model="newProduct.category_id">
             <option value="">
-              --- Select One ---
+              -- --- Select One --- --
             </option>
             <option
               v-for="category in categories"
@@ -44,9 +41,9 @@
           Supplier:
         </td>
         <td>
-          <select required v-model="newProduct.supplier">
+          <select required v-model="newProduct.supplier_id">
             <option value="">
-              --- Select One ---
+              -- --- Select One --- --
             </option>
             <option
               v-for="supplier in suppliers"
@@ -58,6 +55,7 @@
           </select>
         </td>
       </tr>
+
       <tr>
         <td>
           Image:
@@ -122,8 +120,8 @@ export default {
       newProduct: {
         name: "",
         description: "",
-        supplier: "",
-        category: "",
+        supplier_id: "",
+        category_id: "",
         price: 0,
         image: ""
       },
@@ -132,7 +130,34 @@ export default {
     };
   },
 
-  methods: {}
+  methods: {
+    addProducts() {
+      axios
+        .post("http://127.0.0.1:8000/api/product", this.newProduct)
+        .then(response => {
+          console.log(response.data);
+          this.$router.push({ name: "admin.product" });
+        });
+    }
+  },
+
+  mounted() {
+    const getToken = localStorage.getItem("token");
+    if (!getToken) {
+      this.$router.push("/login");
+    }
+    // setTimeout(() => {
+    //   this.addProducts();
+    // }, 1000);
+    // /get all suppllier/
+    axios.get("http://127.0.0.1:8000/api/supplier").then(response => {
+      this.suppliers = response.data.data;
+    });
+    // /get all suppllier/
+    axios.get("http://127.0.0.1:8000/api/category").then(response => {
+      this.categories = response.data.data;
+    });
+  }
 };
 </script>
 

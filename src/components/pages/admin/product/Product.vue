@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2 class="fleft">Product</h2>
-    <router-link :to="{ name: 'product' }">
+    <router-link :to="{ name: 'AddProduct' }">
       <button class="addBtn fright">Add New</button>
     </router-link>
 
@@ -33,7 +33,11 @@
           </router-link>
         </td>
         <td>
-          <button class="delete" v-on:click="clickDelete(product.id)">
+          <button
+            type="submit"
+            class="delete"
+            v-on:click="deleteProduct(product.id)"
+          >
             Delete
           </button>
         </td>
@@ -57,9 +61,25 @@ export default {
 
   methods: {
     loadProducts() {
+      this.$eventBus.$emit("loadingStatus", true);
+
       axios.get("http://127.0.0.1:8000/api/product").then(response => {
         this.product = response.data.data;
+
+        this.$eventBus.$emit("loadingStatus", false);
         console.log(response.data);
+      });
+    },
+
+    deleteProduct(id) {
+      axios.delete(`http://127.0.0.1:8000/api/product/${id}`).then(response => {
+        console.log(response);
+        this.loadProducts();
+      });
+
+      iziToast.success({
+        title: "Hello",
+        message: "Delete  successfully!!"
       });
     }
   },

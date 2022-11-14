@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form @submit.prevent="editSubmit()">
+    <form @submit.prevent="updateProduct()">
       <table>
         <tr>
           <td>
@@ -20,7 +20,7 @@
             Category:
           </td>
           <td>
-            <select v-model="product.category">
+            <select v-model="product.category_id">
               <option value="">
                 --- Select One ---
               </option>
@@ -40,7 +40,7 @@
             Supplier:
           </td>
           <td>
-            <select v-model="product.supplier">
+            <select v-model="product.supplier_id">
               <option value="">
                 --- Select One ---
               </option>
@@ -119,8 +119,8 @@ export default {
       product: {
         name: "",
         description: "",
-        supplier: "",
-        category: "",
+        supplier_id: "",
+        category_id: "",
         price: 0,
         image: ""
       },
@@ -130,7 +130,55 @@ export default {
     };
   },
 
-  methods: {}
+  methods: {
+    //show single product data
+    updateProduct() {
+      axios
+        .put(
+          "http://127.0.0.1:8000/api/product/" + this.$route.params.id,
+          this.product
+        )
+        .then(response => {
+          console.log(response.data);
+          this.$router.push({ name: "admin.product" });
+          iziToast.success({
+            title: "Hello",
+            message: " Product update successfully !"
+          });
+        });
+    }
+  },
+
+  mounted() {
+    const getToken = localStorage.getItem("token");
+    if (!getToken) {
+      this.$router.push("/login");
+    }
+    //show single product data
+    axios
+      .get(
+        "http://127.0.0.1:8000/api/product/" + this.$route.params.id,
+        this.product
+      )
+      .then(response => {
+        console.log(response.data);
+        this.product.name = response.data.data.name;
+        this.product.description = response.data.data.description;
+        this.product.price = response.data.data.price;
+        this.product.category_id = response.data.data.category_id;
+        this.product.supplier_id = response.data.data.supplier_id;
+        // this.$router.push({ name: "admin.product" });
+      });
+
+    // /get all suppllier/
+    axios.get("http://127.0.0.1:8000/api/supplier").then(response => {
+      this.suppliers = response.data.data;
+    });
+    // /get all suppllier/
+    axios.get("http://127.0.0.1:8000/api/category").then(response => {
+      this.categories = response.data.data;
+    });
+  }
 };
 </script>
 
