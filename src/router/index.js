@@ -15,6 +15,10 @@ import Product from "@/components/pages/admin/product/Product";
 import ProductAdd from "@/components/pages/admin/product/AddProduct";
 import ProductEdit from "@/components/pages/admin/product/EditProduct";
 
+import Shop from "@/components/pages/shop/Shop";
+import shopProducts from "@/components/pages/shop/shopProducts";
+import shopProduct from "@/components/pages/shop/shopProduct";
+
 Vue.use(Router);
 
 export default new Router({
@@ -89,6 +93,31 @@ export default new Router({
           name: "ProductEdit",
           component: ProductEdit
         }
+      ]
+    },
+
+    //.......... Shop.............. //
+    {
+      path: "/shop",
+      name: "shop",
+      component: Shop,
+      redirect: { path: "/shop/products" },
+      children: [
+        {
+          path: "products",
+          name: "shop.products",
+          component: shopProducts
+        },
+        {
+          path: "product/:id",
+          name: "single-product",
+          component: shopProduct
+        }
+        // {
+        //   path: "checkout",
+        //   name: "shop.checkout",
+        //   component: Checkout
+        // }
       ]
     }
   ],

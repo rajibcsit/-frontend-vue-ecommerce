@@ -93,14 +93,20 @@
             <div class="form-group">
               <input
                 type="file"
-                name="image"
+                name="product.image"
                 @change="loadImage"
                 class="form-control"
                 placeholder=""
               />
+              <img
+                v-if="product.photo"
+                :src="product.photo"
+                alt=""
+                style="height:100px"
+              />
             </div>
             <br />
-            <img :src="photo" alt="" style="height:100px" />
+
             <br />
           </td>
         </tr>
@@ -130,11 +136,12 @@ export default {
         supplier_id: "",
         category_id: "",
         price: 0,
-        image: ""
+        image: "",
+        photo: ""
       },
       suppliers: [],
       categories: [],
-      photo: "",
+
       errorMessage: null
     };
   },
@@ -148,7 +155,7 @@ export default {
       let reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = e => {
-        this.photo = e.target.result;
+        product.photo = e.target.result;
       };
     },
     //show single product data
@@ -185,10 +192,7 @@ export default {
     }
     //show single product data
     axios
-      .get(
-        "http://127.0.0.1:8000/api/product/" + this.$route.params.id,
-        this.product
-      )
+      .get("http://127.0.0.1:8000/api/product/" + this.$route.params.id)
       .then(response => {
         console.log(response.data);
         this.product.name = response.data.data.name;
@@ -196,7 +200,7 @@ export default {
         this.product.price = response.data.data.price;
         this.product.category_id = response.data.data.category_id;
         this.product.supplier_id = response.data.data.supplier_id;
-        this.product.image = response.data.data.image;
+        this.product.photo = response.data.data.image;
       });
 
     // /get all suppllier/
