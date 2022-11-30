@@ -86,6 +86,11 @@ export default {
     this.$eventBus.$on("addToCart", payload => {
       this.cart.push(payload);
     });
+
+    // product remove to cart
+    this.$eventBus.$on("removeToCart", payload => {
+      this.cart = [];
+    });
   },
   methods: {
     logoutNow() {

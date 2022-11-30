@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
 import Login from "@/components/pages/Login";
+import Registration from "@/components/pages/Registration";
 import Admin from "@/components/pages/admin/Admin";
 
 import Category from "@/components/pages/admin/category/Category";
@@ -19,6 +20,8 @@ import Shop from "@/components/pages/shop/Shop";
 import shopProducts from "@/components/pages/shop/shopProducts";
 import shopProduct from "@/components/pages/shop/shopProduct";
 
+import Checkout from "@/components/pages/shop/Checkout";
+
 Vue.use(Router);
 
 export default new Router({
@@ -33,6 +36,11 @@ export default new Router({
       path: "/login",
       name: "login",
       component: Login
+    },
+    {
+      path: "/registration",
+      name: "registration",
+      component: Registration
     },
     {
       path: "/admin",
@@ -112,12 +120,12 @@ export default new Router({
           path: "product/:id",
           name: "single-product",
           component: shopProduct
+        },
+        {
+          path: "checkout",
+          name: "shop.checkout",
+          component: Checkout
         }
-        // {
-        //   path: "checkout",
-        //   name: "shop.checkout",
-        //   component: Checkout
-        // }
       ]
     }
   ],
